@@ -1,0 +1,124 @@
+#for first assignment
+
+class MiniBank:
+
+    main_userInfo:dict = {}
+
+    def firstOption(self):
+
+        option:int =   int(input("\nPress1 to login:\nPress2 to register:\n"))
+
+        if (option==1):
+          self.login()
+
+        else:
+          self.register()
+
+
+    def register(self):
+        print("___________This is from register__________\n")
+        r_username: str = input("Please enter username:")
+        r_passcode1: int = int(input("Please enter passcode:"))
+        r_passcode2: int = int(input("Please enter passcode again to confirm:\n"))
+        r_money: int = int(input("Please enter user amount:\n"))
+
+        if (r_passcode1 == r_passcode2):
+            id: int = self.checkingUserCount()
+            userInfoForm: dict = {id: {"r_username": r_username, "r_passcode": r_passcode1, "amount": r_money}}
+
+            self.main_userInfo.update(userInfoForm)
+
+            print("***Register successful***\n")
+            print(self.main_userInfo)
+        else:
+            print("Try again")
+
+    def checkingUserCount(self):
+        count = len(self.main_userInfo)
+        return count + 1
+
+    def returnId(self,username):
+        userInfoLength = len(self.main_userInfo)
+        for i in range(1,userInfoLength+1):
+            if self.main_userInfo[i]["r_username"]==username:
+                return i
+        return None
+
+    def transfermoney(self,login_id,transfer_id,transfer_money):
+        if self.main_userInfo[login_id]["amount"] > transfer_money:
+            print("Money transfer successful:")
+            aftertransfermoney = int(self.main_userInfo[login_id]["amount"]-transfer_money)
+            print("This is your money after transfering:",aftertransfermoney)
+
+
+        else:
+            print("U have not enough balance:")
+
+    def menu(self,login_id):
+
+        menu_input = int(input("Press 1 to Transfer:\nPress 2 to Withdraw:\nPress 3 to update user data:\n"
+                               "Press 4 to check balance:\n"))
+        if menu_input==1:
+            transfer_username  = input("Please enter username to Transfer")
+            transfer_id = self.returnId(transfer_username)
+            print("Transfer Id:",transfer_id)
+            print("My Id:",login_id)
+            transfer_money = int(input("Please enter money amount to transfer:"))
+            Tmoney = self.transfermoney(login_id,transfer_id,transfer_money)
+
+        elif menu_input == 2:
+            withdraw_money = int(input("Please enter ur amount to withdraw:"))
+            afterwithdrawmoney = self.main_userInfo[login_id]["amount"]-withdraw_money
+            print("This is your money after withdraw:",afterwithdrawmoney)
+
+        elif menu_input == 3:
+            updateData = int(input("Press 1 to change acc name:\nPress 2 to change passcode:\nPress 3 to add money:\n"
+                                   "Press 4 to check balance:\n"))
+            if updateData == 1:
+                updateUserName = str(input("Please enter ur new acc name:"))
+                self.main_userInfo["r_username"] = updateUserName
+                print("Account name update successfully:",self.main_userInfo["r_username"])
+
+            elif updateData == 2:
+                updateUserpasscode = int(input("Please enter ur new passcode"))
+                self.main_userInfo["r_passcode1"] = updateUserpasscode
+                print("Account passcode update successfully:",self.main_userInfo["r_passcode1"])
+
+            elif updateData == 3:
+                originalMoney = int(input("Please enter ur current money:\n"))
+                updateMoney = int(input("Please enter money amount to add:"))
+                afterAddingMoney = originalMoney + updateMoney
+
+                print("This is your money after adding:",afterAddingMoney)
+                # can`t add dictionary value to integer (this is low level solving)
+                # I will solve this problem in next assignemt sir
+                # with respectfully  by Htet Aung:
+
+            elif updateData == 4:
+                print("This is your current balance:",self.main_userInfo["amount"])
+
+
+    def login(self):
+        print("__________This is from login__________\n")
+        l_username : str = input("Please enter username:")
+        l_passcode : int = int(input("Please enter passcode:\n"))
+        exitUsername = self.exitUsername(l_username,l_passcode)
+        if (exitUsername):
+            print("\n_______Login successful_______\n")
+            login_id = int(self.returnId(l_username))
+            self.menu(login_id)
+        else:
+            print("User name does not exist:")
+
+    def exitUsername(self, l_username,l_passcode):
+        user_count = len(self.main_userInfo)
+
+        for i in range(1,user_count+1):
+            if self.main_userInfo[i]["r_username"] == l_username and self.main_userInfo[i]["r_passcode"]==l_passcode:
+                return True
+        return False
+
+if __name__ == "__main__":
+    miniBank :MiniBank =MiniBank()
+    while True:
+            miniBank.firstOption()
