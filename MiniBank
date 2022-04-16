@@ -11,8 +11,11 @@ class MiniBank:
         if (option==1):
           self.login()
 
-        else:
+        elif (option == 2):
           self.register()
+
+        else:
+          print("Please enter valid number:\n")
 
 
     def register(self):
@@ -49,8 +52,7 @@ class MiniBank:
             print("Money transfer successful:")
             aftertransfermoney = int(self.main_userInfo[login_id]["amount"]-transfer_money)
             print("This is your money after transfering:",aftertransfermoney)
-
-
+            self.main_userInfo.update({"amount":aftertransfermoney})
         else:
             print("U have not enough balance:")
 
@@ -63,17 +65,22 @@ class MiniBank:
             transfer_id = self.returnId(transfer_username)
             print("Transfer Id:",transfer_id)
             print("My Id:",login_id)
-            transfer_money = int(input("Please enter money amount to transfer:"))
-            Tmoney = self.transfermoney(login_id,transfer_id,transfer_money)
+            if transfer_id == None:
+                return
+            else:
+                transfer_money = int(input("Please enter money amount to transfer:"))
+                Tmoney = self.transfermoney(login_id,transfer_id,transfer_money)
+
 
         elif menu_input == 2:
             withdraw_money = int(input("Please enter ur amount to withdraw:"))
             afterwithdrawmoney = self.main_userInfo[login_id]["amount"]-withdraw_money
             print("This is your money after withdraw:",afterwithdrawmoney)
+            self.main_userInfo.update({"amount":afterwithdrawmoney})
 
         elif menu_input == 3:
-            updateData = int(input("Press 1 to change acc name:\nPress 2 to change passcode:\nPress 3 to add money:\n"
-                                   "Press 4 to check balance:\n"))
+            updateData = int(input("Press 1 to change acc name:\nPress 2 to change passcode:\nPress 3 to add money:\n"))
+
             if updateData == 1:
                 updateUserName = str(input("Please enter ur new acc name:"))
                 self.main_userInfo["r_username"] = updateUserName
@@ -85,17 +92,14 @@ class MiniBank:
                 print("Account passcode update successfully:",self.main_userInfo["r_passcode1"])
 
             elif updateData == 3:
-                originalMoney = int(input("Please enter ur current money:\n"))
                 updateMoney = int(input("Please enter money amount to add:"))
-                afterAddingMoney = originalMoney + updateMoney
-
+                afterAddingMoney = int(self.main_userInfo[login_id]["amount"]+updateMoney)
                 print("This is your money after adding:",afterAddingMoney)
-                # can`t add dictionary value to integer (this is low level solving)
-                # I will solve this problem in next assignemt sir
-                # with respectfully  by Htet Aung:
+                self.main_userInfo.update({"amount":afterAddingMoney})
 
-            elif updateData == 4:
-                print("This is your current balance:",self.main_userInfo["amount"])
+        elif menu_input == 4:
+            # check balance money does not updated after transfering or withdrawing
+            print("This is your current balance:",self.main_userInfo[login_id]["amount"])
 
 
     def login(self):
